@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Resources:
+  GetBoardsFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.getBoards
+      Runtime: nodejs20.x
+      Events:
+        GetBoards:
+          Type: Api
+          Properties:
+            Path: /boards
+            Method: get
+  CreateBoardFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.createBoard
+      Runtime: nodejs20.x
+      Events:
+        CreateBoard:
+          Type: Api
+          Properties:
+            Path: /boards
+            Method: post
