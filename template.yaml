@@ -1,25 +1,152 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
+
+Globals:
+  Function:
+    Timeout: 30
+
 Resources:
-  GetBoardsFunction:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: index.getBoards
-      Runtime: nodejs20.x
-      Events:
-        GetBoards:
-          Type: Api
-          Properties:
-            Path: /boards
-            Method: get
+  # Boards API
   CreateBoardFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Handler: index.createBoard
-      Runtime: nodejs20.x
+      Handler: src/boards/createBoard.handler
+      Runtime: nodejs14.x
       Events:
         CreateBoard:
           Type: Api
           Properties:
             Path: /boards
             Method: post
+  GetBoardsFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/boards/getBoards.handler
+      Runtime: nodejs14.x
+      Events:
+        GetBoards:
+          Type: Api
+          Properties:
+            Path: /boards
+            Method: get
+  UpdateBoardFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/boards/updateBoard.handler
+      Runtime: nodejs14.x
+      Events:
+        UpdateBoard:
+          Type: Api
+          Properties:
+            Path: /boards/{boardId}
+            Method: put
+  DeleteBoardFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/boards/deleteBoard.handler
+      Runtime: nodejs14.x
+      Events:
+        DeleteBoard:
+          Type: Api
+          Properties:
+            Path: /boards/{boardId}
+            Method: delete
+
+  # Lists API
+  CreateListFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/lists/createList.handler
+      Runtime: nodejs14.x
+      Events:
+        CreateList:
+          Type: Api
+          Properties:
+            Path: /boards/{boardId}/lists
+            Method: post
+  GetListsFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/lists/getLists.handler
+      Runtime: nodejs14.x
+      Events:
+        GetLists:
+          Type: Api
+          Properties:
+            Path: /boards/{boardId}/lists
+            Method: get
+  UpdateListFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/lists/updateList.handler
+      Runtime: nodejs14.x
+      Events:
+        UpdateList:
+          Type: Api
+          Properties:
+            Path: /boards/{boardId}/lists/{listId}
+            Method: put
+  DeleteListFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/lists/deleteList.handler
+      Runtime: nodejs14.x
+      Events:
+        DeleteList:
+          Type: Api
+          Properties:
+            Path: /boards/{boardId}/lists/{listId}
+            Method: delete
+
+  # Cards API
+  CreateCardFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/cards/createCard.handler
+      Runtime: nodejs14.x
+      Events:
+        CreateCard:
+          Type: Api
+          Properties:
+            Path: /boards/{boardId}/lists/{listId}/cards
+            Method: post
+  GetCardsFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/cards/getCards.handler
+      Runtime: nodejs14.x
+      Events:
+        GetCards:
+          Type: Api
+          Properties:
+            Path: /boards/{boardId}/lists/{listId}/cards
+            Method: get
+  UpdateCardFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/cards/updateCard.handler
+      Runtime: nodejs14.x
+      Events:
+        UpdateCard:
+          Type: Api
+          Properties:
+            Path: /boards/{boardId}/lists/{listId}/cards/{cardId}
+            Method: put
+  DeleteCardFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/cards/deleteCard.handler
+      Runtime: nodejs14.x
+      Events:
+        DeleteCard:
+          Type: Api
+          Properties:
+            Path: /boards/{boardId}/lists/{listId}/cards/{cardId}
+            Method: delete
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL for Prod environment"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Export:
+      Name: "ApiUrl"
